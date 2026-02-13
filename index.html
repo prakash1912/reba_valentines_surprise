@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Valentine's Day Surprise 💝</title>
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating hearts animation */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: float-up 10s infinite;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Welcome screen */
+        .screen {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in;
+            display: none;
+            margin: 20px 0;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #d946ef;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #667eea;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        /* Button styles */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Task counter */
+        .task-counter {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        /* Task styles */
+        .task-content {
+            margin: 30px 0;
+        }
+
+        .task-question {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            text-align: center;
+            color: #2d3436;
+            font-weight: bold;
+        }
+
+        /* Input styles */
+        input[type="text"], input[type="date"], textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+            outline: none;
+            border-color: #d946ef;
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.3);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Choice buttons */
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .choice-btn {
+            background: white;
+            border: 3px solid #667eea;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .choice-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .choice-btn.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Balloon Pop Game */
+        .balloon-container {
+            position: relative;
+            height: 450px;
+            margin: 30px 0;
+            overflow: hidden;
+            background: linear-gradient(180deg, #E0F7FF 0%, #FFF0F5 100%);
+            border-radius: 20px;
+            border: 3px solid #FFB6C1;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 70px;
+            height: 90px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            animation: float-balloon 4s ease-in-out infinite;
+        }
+
+        .balloon:hover {
+            transform: scale(1.1);
+        }
+
+        .balloon-body {
+            width: 70px;
+            height: 85px;
+            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .balloon-string {
+            position: absolute;
+            width: 2px;
+            height: 50px;
+            background: #FFB6C1;
+            left: 50%;
+            bottom: -50px;
+            transform: translateX(-50%);
+        }
+
+        @keyframes float-balloon {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-20px) rotate(3deg); }
+        }
+
+        .balloon-message {
+            position: absolute;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+            font-size: 15px;
+            color: #FF1493;
+            font-weight: 500;
+            white-space: nowrap;
+            z-index: 100;
+            animation: pop-message 0.5s ease;
+            border: 2px solid #FFB6C1;
+        }
+
+        @keyframes pop-message {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Fortune Cookie */
+        .fortune-cookie-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .fortune-cookie {
+            display: inline-block;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .fortune-cookie:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cookie-circle {
+            font-size: 120px;
+            animation: wiggle 2s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .fortune-message {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #FFE66D 0%, #FF6B6B 100%);
+            border-radius: 20px;
+            font-size: 1.3em;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: fortuneReveal 0.8s ease;
+        }
+
+        @keyframes fortuneReveal {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* Spin the Wheel */
+        .wheel-container {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .wheel-pointer {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #FF1493;
+            position: relative;
+            margin: 0 auto 10px;
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+        }
+
+        .wheel {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            border: 15px solid #FFD700;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        .wheel-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10;
+            border: 4px solid white;
+        }
+
+        .wheel-center:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .wheel-result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Memory game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            transition: all 0.3s ease;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .memory-card .card-front,
+        .memory-card .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            transition: transform 0.6s;
+        }
+
+        .memory-card .card-front {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            transform: rotateY(0deg);
+        }
+
+        .memory-card .card-back {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.flipped .card-front {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.flipped .card-back {
+            transform: rotateY(0deg);
+        }
+
+        .memory-card.matched {
+            opacity: 0.6;
+            cursor: default;
+            background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+        }
+
+        .memory-card.matched .card-front {
+            background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+        }
+
+        /* Word search */
+        .word-search-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .word-cell {
+            aspect-ratio: 1;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+        }
+
+        .word-cell:hover {
+            background: #f0f0f0;
+        }
+
+        .word-cell.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .word-cell.found {
+            background: #00b894;
+            color: white;
+        }
+
+        .words-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .word-item {
+            padding: 8px 15px;
+            background: #dfe6e9;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .word-item.found {
+            background: #00b894;
+            color: white;
+            text-decoration: line-through;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894 0%, #55efc4 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Final message styles */
+        .final-message {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .final-message h1 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .message-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #2d3436;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Fireworks */
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            animation: explode 1s ease-out;
+        }
+
+        @keyframes explode {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty));
+            }
+        }
+
+        /* Hint system */
+        .hint-btn {
+            background: #fdcb6e;
+            color: #2d3436;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 10px auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .hint-btn:hover {
+            background: #ffeaa7;
+            transform: scale(1.05);
+        }
+
+        .hint-box {
+            background: #74b9ff;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .hint-box.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        /* Error message */
+        .error-message {
+            background: #ff7675;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Success message */
+        .success-message {
+            background: #00b894;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        /* Loading spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            position: absolute;
+            animation: confetti-fall 3s linear;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Timer */
+        .timer {
+            text-align: center;
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        /* Rotating ring */
+        .ring-container {
+            margin: 50px auto;
+            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ring {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateRing 4s linear infinite;
+        }
+
+        @keyframes rotateRing {
+            0% {
+                transform: rotateY(0deg) rotateX(20deg);
+            }
+            100% {
+                transform: rotateY(360deg) rotateX(20deg);
+            }
+        }
+
+        .ring-band {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 20px solid;
+            border-image: linear-gradient(135deg, #f9ca24, #f0932b, #f9ca24) 1;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(249, 202, 36, 0.6),
+                        inset 0 0 30px rgba(249, 202, 36, 0.3);
+        }
+
+        .ring-diamond {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 35px solid #e74c3c;
+            filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.8));
+        }
+
+        .ring-diamond::before {
+            content: '';
+            position: absolute;
+            top: 35px;
+            left: -20px;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 20px solid #e74c3c;
+        }
+
+        .ring-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+
+        .ring-message {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.8em;
+            color: #d946ef;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        /* Surprise boxes */
+        .surprise-box {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            animation: surpriseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes surpriseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(162, 155, 254, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(162, 155, 254, 0.8);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .screen {
+                padding: 20px;
+            }
+
+            .memory-grid,
+            .word-search-grid {
+                max-width: 100%;
+            }
+
+            .choices {
+                grid-template-columns: 1fr;
+            }
+
+            .word-cell {
+                font-size: 0.8em;
+            }
+
+            .wheel {
+                width: 280px;
+                height: 280px;
+            }
+
+            .balloon-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h2 style="color: #667eea; margin-top: 20px;">Sending your lovely responses... 💌</h2>
+            <p style="color: #666;">Please wait a moment 💕</p>
+        </div>
+    </div>
+
+    <!-- Floating hearts background -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <div class="container">
+        <!-- Entry Question Screen -->
+        <div class="screen active" id="entry">
+            <h1>💝 Before We Begin... 💝</h1>
+            <div style="margin: 60px 0;">
+                <h2 style="font-size: 2.5em; color: #d946ef; margin-bottom: 40px;">Do You Be My Best Friend?</h2>
+                <div style="display: flex; gap: 30px; justify-content: center; align-items: center; margin-top: 50px;">
+                    <button class="btn" style="background: linear-gradient(135deg, #00b894 0%, #55efc4 100%); font-size: 1.3em; padding: 20px 60px;" onclick="answerYes()">💕 YES! 💕</button>
+                    <button class="btn" id="noBtn" style="background: linear-gradient(135deg, #ff7675 0%, #d63031 100%); font-size: 1.3em; padding: 20px 60px; position: relative;" onmouseover="moveNoButton()" onclick="moveNoButton()">😢 No</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div class="screen" id="welcome">
+            <h1>💝 Welcome, Aswini😍! 💝</h1>
+            <p>Happy Valentine's Day, My Best Friend! ❤️</p>
+            <div class="surprise-box">
+                ✨ Get ready for an amazing adventure through our friendship! ✨
+            </div>
+            <p>I've prepared something incredibly special for you today. This is not just a simple message - it's a magical journey through our friendship, our memories, and everything that makes us special.</p>
+            <p>Complete 8 fun challenges, and at the end, you'll discover a beautiful surprise that will make your heart flutter! 💖</p>
+            <p style="font-style: italic; color: #667eea;">Take your time, enjoy every moment, and know that every task represents a piece of my heart. Your responses will be automatically saved as you complete each task! 💕</p>
+            <button class="btn" onclick="startJourney()">Let's Begin Our Amazing Journey! 💖</button>
+        </div>
+
+        <!-- Task 1: Love Questions -->
+        <div class="screen" id="task1">
+            <div class="task-counter">Task 1 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 12.5%">12.5%</div>
+            </div>
+            <h2>💭 Our Friendship Story Quiz</h2>
+            <p>Let's see how well you remember our special moments together!</p>
+            
+            <div class="task-content">
+                <div class="task-question">What was your first thought when you met me?</div>
+                <input type="text" id="q1" placeholder="Type your answer here...">
+                
+                <div class="task-question">Tell me something which I need to change?</div>
+                <input type="text" id="q2" placeholder="Type your answer here...">
+                
+                <div class="task-question">When did we have our first meet? (YYYY-MM-DD)</div>
+                <input type="date" id="q3">
+            </div>
+            
+            <div class="error-message" id="error1">Oops! Please fill in all the answers! 💕</div>
+            <button class="hint-btn" onclick="showHint(1)">Need a hint? 💡</button>
+            <div class="hint-box" id="hint1">
+                Think about those beautiful moments we shared. Every answer is precious to us! There's no wrong answer - just share what's in your heart. 💕
+            </div>
+            <button class="btn" onclick="validateTask1()">Continue to Next Task →</button>
+        </div>
+
+        <!-- Task 2: Balloon Pop Game -->
+        <div class="screen" id="task2">
+            <div class="task-counter">Task 2 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 25%">25%</div>
+            </div>
+            <h2>🎈 Pop the Love Balloons!</h2>
+            <p>Pop all the balloons to reveal sweet messages! Click on each balloon! 💕</p>
+            
+            <div class="task-content">
+                <div class="balloon-container" id="balloonContainer"></div>
+                <div class="timer" id="timer2">Balloons popped: <span id="balloonCount">0</span>/8</div>
+            </div>
+            
+            <div class="success-message" id="success2">Amazing! You found all my love messages! 🎊</div>
+            <button class="btn" onclick="validateTask2()" style="display: none;" id="task2btn">Continue to Next Task →</button>
+        </div>
+
+        <!-- Task 3: Choose Your Feelings -->
+        <div class="screen" id="task3">
+            <div class="task-counter">Task 3 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 37.5%">37.5%</div>
+            </div>
+            <h2>💖 Express Your Heart</h2>
+            <p>Choose all the feelings that describe how you feel about our friendship:</p>
+            
+            <div class="task-content">
+                <div class="choices">
+                    <div class="choice-btn" onclick="toggleChoice(this)">😊 Happy</div>
+                    <div class="choice-btn" onclick="toggleChoice(this)">🥰 Loved</div>
+                    <div class="choice-btn" onclick="toggleChoice(this)">💑 Blessed</div>
+                    <div class="choice-btn" onclick="toggleChoice(this)">🌟 Grateful</div>
+                    <div class="choice-btn" onclick="toggleChoice(this)">💫 Excited</div>
+                    <div class="choice-btn" onclick="toggleChoice(this)">🌈 Hopeful</div>
+                </div>
+            </div>
+            
+            <div class="error-message" id="error3">Please select at least one feeling! 💕</div>
+            <button class="btn" onclick="validateTask3()">Continue to Next Task →</button>
+        </div>
+
+        <!-- Task 4: Fortune Cookie -->
+        <div class="screen" id="task4">
+            <div class="task-counter">Task 4 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%">50%</div>
+            </div>
+            <h2>🥠 Love Fortune Cookie</h2>
+            <p>Click the fortune cookie to reveal your romantic fortune!</p>
+            
+            <div class="task-content">
+                <div class="fortune-cookie-container">
+                    <div class="fortune-cookie" id="fortuneCookie" onclick="openFortuneCookie()">
+                        <div class="cookie-circle">🥠</div>
+                    </div>
+                    <p style="font-size: 15px; color: #FF69B4; font-weight: 600;">Click the cookie! ☝️</p>
+                    <div class="fortune-message" id="fortuneMessage"></div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="validateTask4()" style="display: none;" id="task4btn">Continue to Next Task →</button>
+        </div>
+
+        <!-- Task 5: Spin the Wheel -->
+        <div class="screen" id="task5">
+            <div class="task-counter">Task 5 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 62.5%">62.5%</div>
+            </div>
+            <h2>🎡 Spin the Love Wheel!</h2>
+            <p>Click the center to spin and discover what I promise you!</p>
+            
+            <div class="task-content">
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel" id="wheel">
+                        <div class="wheel-center" onclick="spinWheel()">SPIN</div>
+                    </div>
+                    <div class="wheel-result" id="wheelResult">Click SPIN to begin! 💕</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="validateTask5()" style="display: none;" id="task5btn">Continue to Next Task →</button>
+        </div>
+
+        <!-- Task 6: Memory Card Game -->
+        <div class="screen" id="task6">
+            <div class="task-counter">Task 6 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%">75%</div>
+            </div>
+            <h2>💕 Match Our Love</h2>
+            <p>Find all the matching pairs of hearts! Click on cards to flip them.</p>
+            
+            <div class="task-content">
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="timer" id="timer6">Pairs found: <span id="pairsCount">0</span>/8</div>
+            </div>
+            
+            <div class="success-message" id="success6">Amazing! You found all the pairs! 🎊</div>
+            <button class="hint-btn" onclick="showHint(6)">Need a hint? 💡</button>
+            <div class="hint-box" id="hint6">
+                Just like in our friendship, it's all about finding the perfect match! Take your time and remember where each heart is. 💖
+            </div>
+            <button class="btn" onclick="validateTask6()" style="display: none;" id="task6btn">Continue to Next Task →</button>
+        </div>
+
+        <!-- Task 7: Love Letter -->
+        <div class="screen" id="task7">
+            <div class="task-counter">Task 7 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 87.5%">87.5%</div>
+            </div>
+            <h2>💌 A Letter From Your Heart</h2>
+            <p>Write a few words about what our friendship means to you:</p>
+            
+            <div class="task-content">
+                <textarea id="loveLetter" placeholder="Dear Best Friend, 
+
+What we share together means...
+
+(Write anything from your heart - there's no right or wrong answer. Just be you! 💕)"></textarea>
+            </div>
+            
+            <div class="error-message" id="error7">Please write something from your heart! 💕</div>
+            <button class="btn" onclick="validateTask7()">Continue to Last Task →</button>
+        </div>
+
+        <!-- Task 8: Draw Your Heart -->
+        <div class="screen" id="task8">
+            <div class="task-counter">Task 8 of 8 ✨</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%">100%</div>
+            </div>
+            <h2>💝 Draw Your Love</h2>
+            <p>Use your finger or mouse to draw something for me! Just scribble anything - it's the thought that counts! 💕</p>
+            
+            <div class="task-content">
+                <canvas id="drawCanvas" style="border: 3px solid #667eea; border-radius: 15px; background: white; cursor: crosshair; display: block; margin: 20px auto; touch-action: none;"></canvas>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="hint-btn" onclick="clearCanvas()" style="background: #ff7675; margin-right: 10px;">🗑️ Clear & Redraw</button>
+                    <button class="hint-btn" onclick="showHint(8)">Need a hint? 💡</button>
+                </div>
+            </div>
+            
+            <div class="hint-box" id="hint8">
+                Just draw anything with your heart! A simple scribble, a heart shape, or even just your initials - anything you draw with love is perfect! 💖
+            </div>
+            <div class="success-message" id="success8">Beautiful! Your heart is perfect! 🎨💕</div>
+            <button class="btn" onclick="validateTask8()" id="task8btn" style="display: none;">Complete & See Your Surprise! 🎁✨</button>
+        </div>
+
+        <!-- Final Reveal -->
+        <div class="screen" id="final">
+            <div class="final-message">
+                <h1>💝 My Dearest Aswini 💝</h1>
+                
+                <div class="message-box">
+                    <p><strong>Happy Valentine's Day, My Wonderful Best Friend!</strong></p>
+                    <p>You've completed this journey, just like how we complete each other every single day. Each task represented a piece of our beautiful story together.</p>
+                    <p>From the moment I met you, my life changed forever. You brought colors to my world, joy to my heart, and meaning to every moment we share.</p>
+                    <p>Every line of code I wrote for this website, every task I created, was filled with love for you. You're not just my best friend - you're my forever companion, my confidant, and my blessing.</p>
+                    <p>Thank you for being you. Thank you for loving me. Thank you for making every day feel like Valentine's Day.</p>
+                    <p><strong>I cherish our friendship more than words can express! 💕</strong></p>
+                    <p style="text-align: right; font-style: italic; margin-top: 20px;">- Your Dearest Friend ❤️</p>
+                </div>
+
+                <div style="margin-top: 50px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                    <h3>✨ Happy Valentine's Day 2026! ✨</h3>
+                    <p>Here's to many more years of friendship, laughter, and beautiful moments together!</p>
+                </div>
+
+                <!-- Rotating Ring -->
+                <div class="ring-container">
+                    <div class="ring">
+                        <div class="ring-band"></div>
+                        <div class="ring-diamond"></div>
+                        <div class="ring-sparkle" style="top: 10px; left: 30px;"></div>
+                        <div class="ring-sparkle" style="top: 30px; left: 10px; animation-delay: 0.5s;"></div>
+                        <div class="ring-sparkle" style="top: 30px; right: 10px; animation-delay: 1s;"></div>
+                        <div class="ring-sparkle" style="bottom: 30px; left: 20px; animation-delay: 1.5s;"></div>
+                    </div>
+                </div>
+                <div class="ring-message">💍 This symbolizes our friendship! 💍</div>
+                <p style="text-align: center; margin-top: 20px; font-size: 1.1em; color: #667eea;">Will you be my best friend forever? 💕</p>
+                
+                <div class="success-message show" style="margin-top: 30px;">
+                    ✅ Your responses have been sent successfully! 💕
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // EMAILJS & WHATSAPP CONFIGURATION
+        // ============================================
+        
+        // Initialize EmailJS - REPLACE THESE WITH YOUR ACTUAL CREDENTIALS
+        (function() {
+            emailjs.init("zbN4MqiLfoLhQAhU2"); // Get from https://www.emailjs.com/
+        })();
+
+        const EMAIL_SERVICE_ID = "service_ogd1x14"; // Your EmailJS service ID
+        const EMAIL_TEMPLATE_ID = "template_8r7dy0b"; // Your EmailJS template ID
+        const YOUR_EMAIL = "prakashm1342m@gmail.com"; // Your email
+        const YOUR_WHATSAPP = "7092784065"; // Your WhatsApp number
+
+        // ============================================
+        // GLOBAL VARIABLES
+        // ============================================
+        let currentTask = 'entry';
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let canvas, ctx;
+        let isDrawing = false;
+        let hasDrawn = false;
+        let balloonsPopped = 0;
+        let fortuneOpened = false;
+        let wheelSpun = false;
+        let wheelPromises = [
+            "I promise to always make you laugh! 😂",
+            "I promise to be there when you need me! 🤗",
+            "I promise to support all your dreams! 🌟",
+            "I promise our friendship will last forever! 💕",
+            "I promise to always listen to you! 👂",
+            "I promise to share all my snacks with you! 🍕",
+            "I promise to be your adventure buddy! 🚗",
+            "I promise to keep all our secrets! 🤫"
+        ];
+
+        // Response capture object
+        let userResponses = {
+            timestamp: new Date().toLocaleString(),
+            name: "Aswini",
+            responses: {}
+        };
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const heartSymbols = ['❤️', '💕', '💖', '💗', '💝', '💓', '💞'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 12000);
+            }, 1000);
+        }
+
+        createHearts();
+
+        // ============================================
+        // AUTO-SEND RESPONSES FUNCTION
+        // ============================================
+        
+        async function autoSendResponses() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Format responses for email
+                const emailData = {
+                    to_email: YOUR_EMAIL,
+                    from_name: "Aswini - Valentine's Day 2026",
+                    timestamp: userResponses.timestamp,
+                    
+                    // Task 1
+                    first_thought: userResponses.responses.task1?.firstThought || "Not answered",
+                    favorite_place: userResponses.responses.task1?.favoritePlace || "Not answered",
+                    first_meet_date: userResponses.responses.task1?.firstMeetDate || "Not answered",
+                    
+                    // Task 2
+                    balloon_game: userResponses.responses.task2?.message || "Not completed",
+                    
+                    // Task 3
+                    feelings: userResponses.responses.task3?.feelings?.join(', ') || "Not answered",
+                    
+                    // Task 4
+                    fortune: userResponses.responses.task4?.fortune || "Not revealed",
+                    
+                    // Task 5
+                    wheel_promise: userResponses.responses.task5?.promise || "Not spun",
+                    
+                    // Task 6
+                    memory_game: userResponses.responses.task6?.message || "Not completed",
+                    
+                    // Task 7
+                    love_letter: userResponses.responses.task7?.loveLetter || "No letter written",
+                    
+                    // Task 8
+                    drawing_message: userResponses.responses.task8?.message || "No drawing"
+                };
+
+                // Try to send email
+                try {
+                    await emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, emailData);
+                    console.log('✅ Email sent successfully!');
+                } catch (emailError) {
+                    console.error('Email sending failed:', emailError);
+                }
+
+                // Generate WhatsApp message
+                const whatsappMessage = formatWhatsAppMessage();
+                
+                loadingOverlay.classList.remove('show');
+                return true;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loadingOverlay.classList.remove('show');
+                return true; // Continue anyway
+            }
+        }
+
+        // Format WhatsApp message with all responses
+        function formatWhatsAppMessage() {
+            let message = `💝 *Valentine's Day 2026 - Aswini's Responses* 💝\n\n`;
+            message += `📅 Completed: ${userResponses.timestamp}\n\n`;
+            
+            message += `*Task 1: Friendship Quiz*\n`;
+            message += `• First thought: ${userResponses.responses.task1?.firstThought || 'N/A'}\n`;
+            message += `• Favorite place: ${userResponses.responses.task1?.favoritePlace || 'N/A'}\n`;
+            message += `• First meet: ${userResponses.responses.task1?.firstMeetDate || 'N/A'}\n\n`;
+            
+            message += `*Task 2: Balloon Pop Game*\n`;
+            message += `${userResponses.responses.task2?.message || 'N/A'}\n\n`;
+            
+            message += `*Task 3: Feelings*\n`;
+            message += `${userResponses.responses.task3?.feelings?.join(', ') || 'N/A'}\n\n`;
+            
+            message += `*Task 4: Fortune Cookie*\n`;
+            message += `${userResponses.responses.task4?.fortune || 'N/A'}\n\n`;
+            
+            message += `*Task 5: Love Wheel*\n`;
+            message += `${userResponses.responses.task5?.promise || 'N/A'}\n\n`;
+            
+            message += `*Task 6: Memory Game*\n`;
+            message += `${userResponses.responses.task6?.message || 'N/A'}\n\n`;
+            
+            message += `*Task 7: Love Letter*\n`;
+            message += `${userResponses.responses.task7?.loveLetter || 'N/A'}\n\n`;
+            
+            message += `*Task 8: Drawing*\n`;
+            message += `${userResponses.responses.task8?.message || 'N/A'}\n\n`;
+            
+            message += `❤️ Sent with love from your Valentine's website!`;
+            
+            return encodeURIComponent(message);
+        }
+
+        // ============================================
+        // ENTRY SCREEN
+        // ============================================
+        
+        function moveNoButton() {
+            const noBtn = document.getElementById('noBtn');
+            const container = noBtn.parentElement;
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            const maxX = containerRect.width - btnRect.width - 100;
+            const maxY = containerRect.height - btnRect.height;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY - 50;
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.transition = 'all 0.3s ease';
+        }
+
+        function answerYes() {
+            createConfetti();
+            createFireworks();
+            setTimeout(() => {
+                showScreen('welcome');
+            }, 1000);
+        }
+
+        function startJourney() {
+            showScreen('task1');
+        }
+
+        // ============================================
+        // SCREEN NAVIGATION
+        // ============================================
+        
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            currentTask = screenId;
+            
+            if (screenId === 'task2') initBalloonGame();
+            if (screenId === 'task6') initMemoryGame();
+            if (screenId === 'task8') initCanvas();
+            if (screenId === 'final') celebrateFinal();
+        }
+
+        // ============================================
+        // TASK VALIDATIONS
+        // ============================================
+        
+        function validateTask1() {
+            const q1 = document.getElementById('q1').value.trim();
+            const q2 = document.getElementById('q2').value.trim();
+            const q3 = document.getElementById('q3').value;
+            
+            if (!q1 || !q2 || !q3) {
+                showError(1);
+                return;
+            }
+            
+            userResponses.responses.task1 = {
+                firstThought: q1,
+                favoritePlace: q2,
+                firstMeetDate: q3
+            };
+            
+            createConfetti();
+            showScreen('task2');
+        }
+
+        // ============================================
+        // TASK 2: BALLOON POP GAME
+        // ============================================
+        
+        function initBalloonGame() {
+            const container = document.getElementById('balloonContainer');
+            container.innerHTML = '';
+            balloonsPopped = 0;
+            document.getElementById('balloonCount').textContent = '0';
+            
+            const balloonMessages = [
+                "You're amazing! 💖",
+                "You make me smile! 😊",
+                "Best friends forever! 👯",
+                "You're my sunshine! ☀️",
+                "Thanks for everything! 🙏",
+                "You're special to me! ⭐",
+                "I appreciate you! 💝",
+                "You're the best! 🏆"
+            ];
+            
+            const colors = ['#FF69B4', '#FF1493', '#FF6B9D', '#C71585', '#DB7093', '#FFC0CB', '#FFB6C1', '#FF69B4'];
+            
+            for (let i = 0; i < 8; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.style.left = (10 + (i % 4) * 23) + '%';
+                balloon.style.top = (30 + Math.floor(i / 4) * 45) + '%';
+                balloon.style.animationDelay = (i * 0.2) + 's';
+                balloon.innerHTML = `
+                    <div class="balloon-body" style="background: linear-gradient(135deg, ${colors[i]} 0%, ${colors[(i+1)%8]} 100%);"></div>
+                    <div class="balloon-string"></div>
+                `;
+                balloon.onclick = function() { popBalloon(this, balloonMessages[i]); };
+                container.appendChild(balloon);
+            }
+        }
+
+        function popBalloon(balloon, message) {
+            if (balloon.classList.contains('popped')) return;
+            
+            balloon.classList.add('popped');
+            balloonsPopped++;
+            document.getElementById('balloonCount').textContent = balloonsPopped;
+            
+            // Create message
+            const messageEl = document.createElement('div');
+            messageEl.className = 'balloon-message';
+            messageEl.textContent = message;
+            messageEl.style.left = balloon.style.left;
+            messageEl.style.top = balloon.style.top;
+            document.getElementById('balloonContainer').appendChild(messageEl);
+            
+            // Pop animation
+            balloon.style.animation = 'none';
+            balloon.style.transform = 'scale(0)';
+            balloon.style.opacity = '0';
+            
+            setTimeout(() => balloon.remove(), 300);
+            setTimeout(() => messageEl.remove(), 3000);
+            
+            if (balloonsPopped === 8) {
+                setTimeout(() => {
+                    document.getElementById('success2').classList.add('show');
+                    document.getElementById('task2btn').style.display = 'block';
+                    createConfetti();
+                    createFireworks();
+                }, 500);
+            }
+        }
+
+        function validateTask2() {
+            userResponses.responses.task2 = {
+                completed: true,
+                balloonsPopped: 8,
+                message: "Popped all love balloons! 🎈"
+            };
+            showScreen('task3');
+        }
+
+        // ============================================
+        // TASK 3: EXPRESS YOUR HEART
+        // ============================================
+        
+        function toggleChoice(element) {
+            element.classList.toggle('selected');
+        }
+
+        function validateTask3() {
+            const selected = document.querySelectorAll('#task3 .choice-btn.selected');
+            if (selected.length === 0) {
+                showError(3);
+                return;
+            }
+            
+            userResponses.responses.task3 = {
+                feelings: Array.from(selected).map(el => el.textContent.trim())
+            };
+            
+            createConfetti();
+            showScreen('task4');
+        }
+
+        // ============================================
+        // TASK 4: FORTUNE COOKIE
+        // ============================================
+        
+        function openFortuneCookie() {
+            if (fortuneOpened) return;
+            
+            const fortunes = [
+                "Your friendship brings endless joy and happiness! 💖",
+                "Together, you two will create beautiful memories forever! ✨",
+                "True friends are like stars - always shining bright! ⭐",
+                "Your bond is stronger than any challenge! 💪",
+                "Love and laughter will always fill your days together! 😊",
+                "The best is yet to come in your friendship! 🌈"
+            ];
+            
+            const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+            const fortuneMsg = document.getElementById('fortuneMessage');
+            fortuneMsg.textContent = fortune;
+            fortuneMsg.style.display = 'block';
+            
+            fortuneOpened = true;
+            
+            userResponses.responses.task4 = {
+                fortune: fortune
+            };
+            
+            createConfetti();
+            
+            setTimeout(() => {
+                document.getElementById('task4btn').style.display = 'block';
+            }, 1000);
+        }
+
+        function validateTask4() {
+            showScreen('task5');
+        }
+
+        // ============================================
+        // TASK 5: SPIN THE WHEEL
+        // ============================================
+        
+        function spinWheel() {
+            if (wheelSpun) return;
+            
+            const wheel = document.getElementById('wheel');
+            const randomSpin = 1800 + Math.floor(Math.random() * 360);
+            wheel.style.transform = `rotate(${randomSpin}deg)`;
+            
+            setTimeout(() => {
+                const selectedPromise = wheelPromises[Math.floor(Math.random() * wheelPromises.length)];
+                document.getElementById('wheelResult').textContent = selectedPromise;
+                
+                userResponses.responses.task5 = {
+                    promise: selectedPromise
+                };
+                
+                wheelSpun = true;
+                createConfetti();
+                createFireworks();
+                
+                setTimeout(() => {
+                    document.getElementById('task5btn').style.display = 'block';
+                }, 1000);
+            }, 4000);
+        }
+
+        function validateTask5() {
+            showScreen('task6');
+        }
+
+        // ============================================
+        // TASK 6: MEMORY GAME
+        // ============================================
+        
+        function initMemoryGame() {
+            const symbols = ['💕', '💖', '💗', '💝', '💓', '💞', '💘', '💌'];
+            const cards = [...symbols, ...symbols];
+            shuffleArray(cards);
+            memoryCards = cards;
+            matchedPairs = 0;
+            flippedCards = [];
+            document.getElementById('pairsCount').textContent = '0';
+            renderMemoryGame();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            
+            memoryCards.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <div class="card-front">❤️</div>
+                    <div class="card-back">${symbol}</div>
+                `;
+                card.onclick = () => flipCard(index, card);
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard(index, cardElement) {
+            if (flippedCards.length === 2 || cardElement.classList.contains('flipped') || 
+                cardElement.classList.contains('matched')) return;
+            
+            cardElement.classList.add('flipped');
+            flippedCards.push({ index, element: cardElement });
+            
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (memoryCards[card1.index] === memoryCards[card2.index]) {
+                card1.element.classList.add('matched');
+                card2.element.classList.add('matched');
+                matchedPairs++;
+                document.getElementById('pairsCount').textContent = matchedPairs;
+                
+                if (matchedPairs === 8) {
+                    document.getElementById('success6').classList.add('show');
+                    document.getElementById('task6btn').style.display = 'block';
+                    createConfetti();
+                    createFireworks();
+                }
+            } else {
+                card1.element.classList.remove('flipped');
+                card2.element.classList.remove('flipped');
+            }
+            
+            flippedCards = [];
+        }
+
+        function validateTask6() {
+            userResponses.responses.task6 = {
+                completed: true,
+                pairsMatched: matchedPairs,
+                message: "Successfully completed the memory matching game! 🎮"
+            };
+            
+            showScreen('task7');
+        }
+
+        // ============================================
+        // TASK 7: LOVE LETTER
+        // ============================================
+        
+        function validateTask7() {
+            const letter = document.getElementById('loveLetter').value.trim();
+            if (letter.length < 10) {
+                showError(7);
+                return;
+            }
+            
+            userResponses.responses.task7 = {
+                loveLetter: letter
+            };
+            
+            createConfetti();
+            showScreen('task8');
+        }
+
+        // ============================================
+        // TASK 8: CANVAS DRAWING
+        // ============================================
+        
+        function initCanvas() {
+            canvas = document.getElementById('drawCanvas');
+            ctx = canvas.getContext('2d');
+            
+            canvas.width = Math.min(500, window.innerWidth - 80);
+            canvas.height = 400;
+            
+            ctx.strokeStyle = '#d946ef';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            
+            hasDrawn = false;
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            hasDrawn = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            if (isDrawing && hasDrawn) {
+                document.getElementById('success8').classList.add('show');
+                document.getElementById('task8btn').style.display = 'block';
+            }
+            isDrawing = false;
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            hasDrawn = true;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasDrawn = false;
+            document.getElementById('success8').classList.remove('show');
+            document.getElementById('task8btn').style.display = 'none';
+        }
+
+        async function validateTask8() {
+            if (!hasDrawn) {
+                showError(8);
+                return;
+            }
+            
+            userResponses.responses.task8 = {
+                drawing: canvas.toDataURL('image/png'),
+                message: "Drew something beautiful! 💝"
+            };
+            
+            // AUTOMATICALLY send responses via email and prepare WhatsApp
+            await autoSendResponses();
+            
+            // Show final screen with fireworks!
+            createFireworks();
+            createConfetti();
+            showScreen('final');
+            
+            // Optional: Auto-open WhatsApp after 3 seconds
+            setTimeout(() => {
+                const whatsappMsg = formatWhatsAppMessage();
+                const whatsappURL = `https://wa.me/${YOUR_WHATSAPP}?text=${whatsappMsg}`;
+                // Uncomment the line below to auto-open WhatsApp
+                // window.open(whatsappURL, '_blank');
+            }, 3000);
+        }
+
+        function celebrateFinal() {
+            createFireworks();
+            createConfetti();
+            setInterval(() => {
+                createFireworks();
+                createConfetti();
+            }, 3000);
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        
+        function showError(taskNum) {
+            const error = document.getElementById('error' + taskNum);
+            error.classList.add('show');
+            setTimeout(() => error.classList.remove('show'), 3000);
+        }
+
+        function showHint(taskNum) {
+            const hint = document.getElementById('hint' + taskNum);
+            hint.classList.toggle('show');
+        }
+
+        function createConfetti() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function createFireworks() {
+            const colors = ['#ff0a54', '#ff477e', '#ff5ca8', '#ff85a1', '#fbb1bd'];
+            const fireworksContainer = document.createElement('div');
+            fireworksContainer.className = 'fireworks';
+            document.body.appendChild(fireworksContainer);
+            
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    
+                    for (let j = 0; j < 30; j++) {
+                        const firework = document.createElement('div');
+                        firework.className = 'firework';
+                        firework.style.left = x + 'px';
+                        firework.style.top = y + 'px';
+                        firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        
+                        const angle = (j / 30) * Math.PI * 2;
+                        const velocity = 50 + Math.random() * 100;
+                        firework.style.setProperty('--tx', Math.cos(angle) * velocity + 'px');
+                        firework.style.setProperty('--ty', Math.sin(angle) * velocity + 'px');
+                        
+                        fireworksContainer.appendChild(firework);
+                        setTimeout(() => firework.remove(), 1000);
+                    }
+                }, i * 200);
+            }
+            
+            setTimeout(() => fireworksContainer.remove(), 2000);
+        }
+    </script>
+</body>
+</html>
